@@ -1,0 +1,25 @@
+{
+    "name": "run-server",
+    "version": "1.0.0",
+    "description": "Run a simple static file server at anywhere.",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/sxei/run-server.git"
+    },
+    "keywords": [
+        "static",
+        "file",
+        "server",
+        "run"
+    ],
+    "author": "sxei",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/sxei/run-server/issues"
+    },
+    "homepage": "https://github.com/sxei/run-server#readme"
+}
