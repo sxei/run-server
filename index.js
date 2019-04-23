@@ -1,6 +1,6 @@
-/**
- * 直接运行
- */
+#!/usr/bin/env node
+
+// 使用：run-server -port 9900 -https -debug -index index.html -open
 
 const http = require('http');
 // var https = require('https')
@@ -19,8 +19,11 @@ const mimeTypes = {
     gif: 'image/gif',
 };
 const args = getArgs();
-const port = args.port || 8899;
-const enableHttps = args.https || false;
+const port = args.port || 8899; // 默认端口
+const enableHttps = args.https || false; // 是否开启https，默认否
+const debug = args.debug  === undefined ? true : args.debug; // 默认开启debug模式
+const indexPage = args.index || 'index.html';
+const autoOpen = args.open || true;
 
 function getArgs() {
     const argArray = process.argv.splice(2); // 获取命令行后面的参数
@@ -37,28 +40,36 @@ function getArgs() {
     return args;
 }
 
-
+function log(...args) {
+    if (debug) {
+        console.log(...args);
+    }
+}
 if (enableHttps) {
     var options = {
         pfx: fs.readFileSync('/Users/xxx.pfx'),
-        passphrase: 'xxxxxx'
+        passphrase: 'xxxxxxx'
     };
     https.createServer(options, onRequest).listen(port)
 } else {
     http.createServer((request, response) => {
         const location = url.parse(request.url, true);
-        console.log(request.url);
+        log(request.url);
         request.setEncoding('utf8');
-        let postData = null;
-        request.addListener('data', (postDataChunk) => {
-            postData += postDataChunk
-        });
+        // let postData = null;
+        // request.addListener('data', (postDataChunk) => {
+        //     postData += postDataChunk
+        // });
         request.addListener('end', () => {
-            const pathname = location.pathname.replace(/^\//g, '') || 'index.html';
-            const filePath = path.resolve(__dirname, pathname);
-            if(fs.existsSync(filePath) && fs.statSync(filePath).isFile) {
+            const pathname = location.pathname.replace(/^\//g, '') || indexPage;
+            let filePath = path.resolve(process.cwd(), pathname);
+            log(`filePath: ${filePath}`);
+            if(fs.existsSync(filePath)) {
+                if (fs.statSync(filePath).isDirectory()) {
+                    filePath = path.join(filePath, indexPage);
+                }
                 const buffer = fs.readFileSync(filePath);
-                const ext = pathname.substring(pathname.lastIndexOf('.') + 1);
+                const ext = filePath.substring(filePath.lastIndexOf('.') + 1);
                 response.writeHead(200, { 'Content-Type': mimeTypes[ext] || 'text/plain' });
                 response.write(buffer);
                 response.end();
@@ -70,4 +81,19 @@ if (enableHttps) {
         });
     }).listen(port);
 }
-console.log('Server running on port http://localhost:' + port);
+
+/**
+ * 使用默认浏览器打开某个URL
+ * @param {*} url 完整URL
+ */
+function openUrlByBrowser(url) {
+    if (!url) {
+        throw new Error('url can not be null.');
+    }
+    require('child_process').exec(`${require('os').platform() === 'win32' ? 'start' : 'open'} ${url}`);
+}
+const runUrl = `${enableHttps ? 'https' : 'http'}://localhost:${port}`;
+console.log('Server running on ' + runUrl);
+if (autoOpen) {
+    openUrlByBrowser(runUrl);
+}

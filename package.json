@@ -1,8 +1,11 @@
 {
     "name": "run-server",
-    "version": "1.0.0",
+    "version": "1.0.4",
     "description": "Run a simple static file server at anywhere.",
     "main": "index.js",
+    "bin": {
+        "run-server": "./index.js"
+    },
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
     },
@@ -21,5 +24,6 @@
     "bugs": {
         "url": "https://github.com/sxei/run-server/issues"
     },
-    "homepage": "https://github.com/sxei/run-server#readme"
+    "homepage": "https://github.com/sxei/run-server#readme",
+    "dependencies": {}
 }
