@@ -56,10 +56,10 @@ if (enableHttps) {
         const location = url.parse(request.url, true);
         log(request.url);
         request.setEncoding('utf8');
-        // let postData = null;
-        // request.addListener('data', (postDataChunk) => {
-        //     postData += postDataChunk
-        // });
+        let postData = null;
+        request.addListener('data', (postDataChunk) => {
+            postData += postDataChunk
+        });
         request.addListener('end', () => {
             const pathname = location.pathname.replace(/^\//g, '') || indexPage;
             let filePath = path.resolve(process.cwd(), pathname);
