@@ -23,7 +23,7 @@ const port = args.port || 8899; // 默认端口
 const enableHttps = args.https || false; // 是否开启https，默认否
 const debug = args.debug  === undefined ? true : args.debug; // 默认开启debug模式
 const indexPage = args.index || 'index.html';
-const autoOpen = args.open || true;
+const autoOpen = args.open === undefined ? '/' : args.open;
 
 function getArgs() {
     const argArray = process.argv.splice(2); // 获取命令行后面的参数
@@ -95,5 +95,5 @@ function openUrlByBrowser(url) {
 const runUrl = `${enableHttps ? 'https' : 'http'}://localhost:${port}`;
 console.log('Server running on ' + runUrl);
 if (autoOpen) {
-    openUrlByBrowser(runUrl);
+    openUrlByBrowser(runUrl + autoOpen);
 }
